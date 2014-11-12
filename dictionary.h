@@ -5,17 +5,11 @@
 #ifndef dictionary_h
 #define dictionary_h
 
-#include "dictionary.cpp"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-
-// function prototypes
-ENTRY *LocateWord(DICT& , WORD);
-BOOL FullDictionary(DICT&);
-BOOL InsertWord(DICT&,WORD);
-WORD GetNextWord(void);
-void DumpDictionary(DICT&);
+#include <iostream>
 
 
 using namespace std;
@@ -29,20 +23,20 @@ typedef bool BOOL;
 typedef string WORD; 
 
 
-
-typedef struct entry {
+typedef struct ENTRY ENTRY;
+struct ENTRY {
 
       int count;                  /* frequency count for a particular word */
 
       WORD w;                     /* the word itself */
 
-      struct entry *nextWord;     /* pointer to next entry */
+      struct ENTRY *nextWord;     /* pointer to next entry */
 
-} ENTRY;
+};
 
 
-
-typedef  dict {
+typedef struct DICT DICT;
+struct  DICT {
 
      int maxEntries;	  /* maximum number of entries allowed; this is an artificial limit */
 
@@ -54,6 +48,15 @@ typedef  dict {
 
      ENTRY *Words;                 /* pointer to the entries in the dictionary */
 
-} DICT;
+};
+
+
+// function prototypes
+ENTRY *LocateWord(DICT& , WORD);
+BOOL FullDictionary(DICT&);
+BOOL InsertWord(DICT&,WORD);
+WORD GetNextWord(void);
+void DumpDictionary(DICT&);
+void sortDict(DICT&);
 
 #endif

@@ -1,91 +1,26 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string>
-#include <iostream>
-#include <new>
-
-using namespace std;
+//function source code for linked list dictionary program
+//Frankie Gauthier
+//CS2010 Assign3
 
 
-const int MAX = 100;
+#include "dictionary.h"
 
 
-typedef string STRING;
-typedef bool BOOL;
-typedef string WORD;    
-
-
-/*
-
-    structure describing a word entry in the dictionary
-
-*/
-typedef struct ENTRY ENTRY;
-
- struct ENTRY {
-      int count;                  /* frequency count for a particular word */
-      WORD w;                     /* the word itself */
-      ENTRY *nextWord;     /* pointer to next entry */
-};
-
-
-/*
-
-    structure describing the dictionary
-
-*/
-typedef struct DICT DICT;
-
-struct DICT{
-     int maxEntries;	  /* maximum number of entries allowed; this is an artificial limit */
-                                   /* link lists can be as big as you want. This limit ensures that   */
-                                   /* this code tries to behave like the previous ones */
-     int numWords;                 /* number of words in the dictionary */
-     ENTRY *Words;                 /* pointer to the entries in the dictionary */
-};
-
-
-
-
-
-/*
-
-  you will have to write code for these 5 functions. 
-
-*/
-
-void sortDict(DICT&);
-ENTRY *LocateWord(DICT& , WORD);
-BOOL FullDictionary(DICT&);
-BOOL InsertWord(DICT&,WORD);
-WORD GetNextWord(void);
-void DumpDictionary(DICT&);
-
-
-/*
-
-  note that these are global variables so that they are already initialized to 0
-
-*/
-
-
-DICT dictionary={MAX,0,0};  /* your dictionary                                                                */
-WORD word;                 /*   */
-
-
+// -inserts a word at the next available location in the dictionary
+// -takes the dictionary to insert the word into and the word to be inserted as params
+// -returns a bool indicating the success of the insert
 
 BOOL InsertWord(DICT &dict, WORD word)
-
 {
-cout << "attempting to insert word..";
+
 	
 	ENTRY *tmp = new ENTRY;
 	tmp->count++;
 	tmp->w = word;
 	tmp->nextWord = NULL;
 		
-	cout << tmp->w <<endl;
-	if (1){
+	
+	if (FullDictionary){
 		if(dict.numWords == 0){
 			dict.Words = tmp;
 			dict.numWords++;
@@ -98,6 +33,7 @@ cout << "attempting to insert word..";
 			return true;
 		}
 		
+		
 	}
 return false;
 
@@ -105,10 +41,13 @@ return false;
 
 
 
+// -prints the words in the dictionary and prints the frequency at which they occur 
+// -takes the dictionary to print as a param
+// -returns nothing
 
 void DumpDictionary(DICT &dict) {
 
-cout << endl <<  "word \t\t frequency" << endl << "---------------------------" << endl;
+cout << endl <<  "Word \t\t Frequency" << endl << "---------------------------" << endl;
 	
 	sortDict(dict);
 
@@ -119,8 +58,23 @@ cout << endl <<  "word \t\t frequency" << endl << "---------------------------" 
 			tmp = tmp->nextWord;
 		}
 	}
+	
+	
+	// free memory used by dictionary
+	while(dict.Words != NULL){
+		ENTRY *tmp = dict.Words;
+		dict.Words = dict.Words->nextWord;
+		delete tmp;
+	}
+	delete dict.Words;
+ 	cout << endl << "deleted memory used by the dictionary.." << endl;	
 }
 
+
+
+
+// -reads characters from the input stream until a non-letter character is read
+// -returns the characters read as a word value
 
 WORD GetNextWord(void){
 
@@ -151,13 +105,25 @@ return tmpword;
 
 
 
+
+
+// -returns if the last entry in the dictionary is occupied (aka its full)
+// -takes the dictionary as a parameter
+// -takes an array of words as a parameter and returns a boolean
+
 BOOL FullDictionary(DICT &dict) {
 
-	if(dict.numWords == dict.maxEntries) return true;
+	if(dict.numWords >= dict.maxEntries) return true;
 	return false;
 
 }
 
+
+
+
+
+// -searches the dictionary passed to it for the word that is passed to it and returns
+// -returns an int (the words index in the dict) or -1 if not
 
 ENTRY *LocateWord(DICT &dict, WORD word) {
 
@@ -170,19 +136,31 @@ ENTRY *LocateWord(DICT &dict, WORD word) {
 		if(word != tmp->w) {position++; tmp = tmp->nextWord;}
 		else return tmp;
 	}
+	delete tmp;
 	return 0;
 
 
 }
 
+
+
+
+
+
+// -performs a dirty selection sort on the dictionary sorting from least to greatest
+// takes a reference to the dictionary as a param
+// returns nothing
+
 void sortDict(DICT &dict){
-	ENTRY *tmp = dict.Words;
-	ENTRY *smallest = tmp;
-	ENTRY *anchor = dict.Words;
+	ENTRY *tmp = dict.Words; // for iterating through to find smallest
+	ENTRY *smallest = tmp;	 // marks smallest node
+	ENTRY *anchor = dict.Words;// marks the position to swap with smallest
 	WORD tmpWord;
 	int tmpCount;
 	
 	while(anchor != NULL){
+		
+		// set tmp and smallest to the new anchor
 		tmp = anchor;
 		smallest = anchor;
 	
@@ -203,39 +181,9 @@ void sortDict(DICT &dict){
 		//advance anchor
 		anchor = anchor->nextWord;			
 	}
+ 	delete tmp,smallest,anchor;
 }
 
-
-int main (void) {
-
-    ENTRY *pos;
-
-
-    while (1) {
-	
-       word = GetNextWord();
-	
-       if ( word.empty() )  {
-	
-           DumpDictionary(dictionary);
-
-           break;
-
-       }
-
-       if ((pos = LocateWord(dictionary,word)) >  0 ) 
-
-           pos->count++;
-
-       else
-
-           if (!InsertWord(dictionary,word)) cout << "dictionary full " << word <<  " cannot be added\n";
-
-    }
-
-    return 0;
-
-}
 
 
 

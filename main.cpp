@@ -23,6 +23,7 @@ int main (void) {
        else
            if (!InsertWord(dictionary,word)) cout << "dictionary full" << word <<  "cannot be added\n";
     }
+    delete pos;
     return 0;
 }
 
