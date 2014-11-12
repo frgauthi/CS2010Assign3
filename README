@@ -1,0 +1,19 @@
+This program takes a file as input and creates a dictionary of the unique words and their frequency count
+using a linked list data structure
+
+Author: Frankie Gauthier
+
+CS2010 Assign3
+
+Compile and Run
+---------------
+
+to compile the program type "make" in the CS2010Assign3 directory
+
+to run the program type ./dictionary  < data.dat  or replace data.dat with your own file.
+
+
+Repository
+----------
+
+https://github.com/frgauthi/CS2010Assign3.git
